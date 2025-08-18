@@ -20,5 +20,6 @@ List of publicly available datasets for automated nuclei analysis (semantic segm
 | 14 | PUMA         |      206      |  97,429  | 40×      |    8     |     1024 × 1024     |   manual   | Instance Seg. & Classification | H&E |                     [paper](https://doi.org/10.1093/gigascience/giaf011)                      | 
 | 15 | PanopTILs    |     1709      | 814,886  | 40×      |    1     |     1024 × 1024     | semi-auto  | Instance Seg. & Classification | H&E |                     [paper](https://doi.org/10.1101/2022.01.08.22268814 )                     | 
 | 16 | OCELOT       |      673      | 114,700  | 40×      |    6     |     1024 × 1024     |   manual   |  Detection & Classification    | H&E |                     [paper](https://doi.org/10.1109/cvpr52729.2023.02289)                     | 
-| 17 | Pan-Cancer-Nuclei-Seg       |      1356      | -  | 40×      |    9     |     256 × 256     |   manual + semi-auto   |  Instance Seg.    | H&E |                     [paper](https://doi.org/10.7937/TCIA.2019.4A4DKP9U)                     | 
-                    
+| 17 | Pan-Cancer-Nuclei-Seg       |      1356      | -  | 40×      |    9     |     256 × 256     |   manual + semi-auto   |  Instance Seg.    | H&E |                     [paper](https://doi.org/10.7937/TCIA.2019.4A4DKP9U) | 
+| 18 | Lizard       |      291      | 495,179  | 20×      |    1     |     1016 × 917     |   semi-auto   |  Instance Seg. & Classification    | H&E |                     [paper](https://doi.org/10.7937/TCIA.2019.4A4DKP9U) | 
+                  
