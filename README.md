@@ -3,6 +3,7 @@ This repository contains:
 1. Dataset descriptions and implementation details of the NucFuseRank paper. 
 2. It includes a list of publicly available datasets for nuclei instance segmentation task.
 
+<img width="4292" height="2148" alt="image" src="https://github.com/user-attachments/assets/a32215de-01bc-45ba-9901-b091b357e00c" />
 
 
 NucleiAnalysis
