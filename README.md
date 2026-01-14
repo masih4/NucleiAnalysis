@@ -1,4 +1,11 @@
-# NucleiAnalysis
+# NucFuseRank: Dataset Fusion and Performance Ranking for Nuclei Instance Segmentation
+This repository contains:
+1. Dataset descriptions and implementation details of the NucFuseRank paper. 
+2. It includes a list of publicly available datasets for nuclei instance segmentation task.
+
+
+
+NucleiAnalysis
 List of publicly available datasets for automated nuclei analysis (semantic segmentation, instance segmentation, classification, and detection)
 
 
@@ -34,3 +41,7 @@ List of publicly available datasets for automated nuclei analysis (semantic segm
 | 28 | SegPath                              |    158,687    |    -     |     40x      |    -     |        984 x 984         |    semi-auto     |         Instance Seg.          |                                        H&E, IF                                         |        [paper](https://doi.org/10.1016/j.patter.2023.100688)         |                                                                                                                                                     [Data](https://zenodo.org/records/7412731)                                                                                                                                                      |
 | 29 | Post-NAT-BRCA                        |      166      |  30,000  |     20x      |    -     |        512 x 512         |      manual      |           Detection            |                                          H&E                                           |            [paper](https://doi.org/10.1002/cyto.a.23244)             |                                                                                                                                     [**Data**](https://www.cancerimagingarchive.net/collection/post-nat-brca/)                                                                                                                                      |
 
+## Acknowledgements
+This project has been conducted through a joint WWTF-funded project (Grant ID: 10.47379/LS23006) between the Medical University of Vienna and Danube Private University. 
+## Citation
+Our paper preprint is available on arXiv: https://arxiv.org/
