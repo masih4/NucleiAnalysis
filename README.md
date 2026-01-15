@@ -1,9 +1,4 @@
 # NucFuseRank: Dataset Fusion and Performance Ranking for Nuclei Instance Segmentation
-This repository contains:
-1. Dataset descriptions and implementation details of the NucFuseRank paper. 
-2. A list of publicly available datasets for automated nuclei analysi
-3. s.
-## 1. NucFuseRank paper:
 In this paper, we evaluated publicly available H&E-stained datasets using two state-of-the-art models: CellViT and HoVerNeXt. We also introduced a fused dataset constructed from these datasets.
 <img width="4292" height="2148" alt="image" src="https://github.com/user-attachments/assets/a32215de-01bc-45ba-9901-b091b357e00c" />
 
