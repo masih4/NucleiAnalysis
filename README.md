@@ -3,7 +3,7 @@ This repository contains:
 1. Dataset descriptions and implementation details of the NucFuseRank paper. 
 2. A list of publicly available datasets for automated nuclei analysis.
 ## 1. NucFuseRank paper:
-In this paper, we introduced a fused dataset for nuclei instance segmentation task. The dataset is constructed from publicly available H&E stained datasets and is evaluated using two state of the art models: CellViT and HoVerNeXt. 
+In this paper, we evaluated publicly available H&E-stained datasets using two state-of-the-art models: CellViT and HoVerNeXt. We also introduced a fused dataset constructed from these datasets.
 <img width="4292" height="2148" alt="image" src="https://github.com/user-attachments/assets/a32215de-01bc-45ba-9901-b091b357e00c" />
 
 | Dataset | Model | PQ | AJI | Dice | Precision | Recall | PQ Rank | Mean Rank |
@@ -33,7 +33,7 @@ In this paper, we introduced a fused dataset for nuclei instance segmentation ta
 
 
 ### NucFuse dataset:
-NuFuse dataset is available on Zenodo: https://arxiv.org/
+NuFuse dataset is available on [figshare](https://figshare.com/)
 
 ## 2. List of datasets for automated nuclei analysis :
 List of publicly available datasets for automated nuclei analysis (semantic segmentation, instance segmentation, classification, and detection)
