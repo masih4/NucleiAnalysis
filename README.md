@@ -29,7 +29,7 @@ Ranking of datasets based on **PQ** metric.
 |  | CellViT | 47.84 | 51.00 | 64.72 | 66.71 | 65.17 |  |  |
 
 ### NucFuse dataset:
-NuFuse dataset is available on [figshare](https://figshare.com/)
+NuFuse dataset is available on [figshare](https://figshare.com/s/c81d0c3401e1bea007f6)
 
 ## Acknowledgements
 This project has been conducted through a joint WWTF-funded project (Grant ID: 10.47379/LS23006) between the Medical University of Vienna and Danube Private University. 
