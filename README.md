@@ -1,9 +1,4 @@
 # NucFuseRank: Dataset Fusion and Performance Ranking for Nuclei Instance Segmentation
-This repository contains:
-1. Dataset descriptions and implementation details of the NucFuseRank paper. 
-2. A list of publicly available datasets for automated nuclei analysi
-3. s.
-## 1. NucFuseRank paper:
 In this paper, we evaluated publicly available H&E-stained datasets using two state-of-the-art models: CellViT and HoVerNeXt. We also introduced a fused dataset constructed from these datasets.
 <img width="4292" height="2148" alt="image" src="https://github.com/user-attachments/assets/a32215de-01bc-45ba-9901-b091b357e00c" />
 
@@ -15,8 +10,8 @@ Ranking of datasets based on **PQ** metric.
 | PUMA | HoVerNeXt | 55.75 | 57.83 | 71.57 | 78.62 | 70.83 | 1 | 2 |
 |  | CellViT | 54.74 | 57.10 | 72.05 | 77.89 | 69.62 | 3 |  |
 | MoNuSeg | HoVerNeXt | 53.38 | 56.08 | 68.45 | 71.05 | 73.72 | 3 | 3 |
-|  | CellViT | 55.11 | 57.55 | 69.43 | 75.09 | 72.26 | 2 |  |the 
-the th| CPM17 | HoVerNeXt | 51.86 | 54.49 | 65.38 | 68.05 | 71.81 | 4 | 4 |
+|  | CellViT | 55.11 | 57.55 | 69.43 | 75.09 | 72.26 | 2 |  |
+| CPM17 | HoVerNeXt | 51.86 | 54.49 | 65.38 | 68.05 | 71.81 | 4 | 4 |
 |  | CellViT | 51.58 | 54.36 | 66.18 | 70.36 | 70.01 | 4 |  |
 | TNBC | HoVerNeXt | 46.39 | 48.20 | 65.94 | 65.82 | 62.44 | 7 | 5 |
 |  | CellViT | 48.67 | 52.76 | 64.85 | 65.13 | 68.85 | 5 |  |
@@ -34,7 +29,7 @@ the th| CPM17 | HoVerNeXt | 51.86 | 54.49 | 65.38 | 68.05 | 71.81 | 4 | 4 |
 |  | CellViT | 47.84 | 51.00 | 64.72 | 66.71 | 65.17 |  |  |
 
 ### NucFuse dataset:
-NuFuse dataset is available on [figshare](https://figshare.com/)
+NuFuse dataset is available on [figshare](https://figshare.com/s/c81d0c3401e1bea007f6)
 
 ## Acknowledgements
 This project has been conducted through a joint WWTF-funded project (Grant ID: 10.47379/LS23006) between the Medical University of Vienna and Danube Private University. 
