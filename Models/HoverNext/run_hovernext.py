@@ -11,6 +11,7 @@ from Models.HoverNext.hover_next_train.src.multi_head_unet import get_model as g
 import tifffile
 import matplotlib.pyplot as plt
 from utils.utils_nuclei import gen_instance_hv_maps
+from DataSetTools.utils1 import train_val_split
 def seed_torch(seed):
     if seed==None:
         seed= random.randint(1, 100)
@@ -34,6 +35,8 @@ parser.add_argument('--variant', type=str, default='1', help='fusion variant')
 parser.add_argument('--iter', type=int, default=300, help='iteration')
 parser.add_argument('--dataset_path', type=str, default='1', help='path to train dataset')
 parser.add_argument('--validation_path', type=str, default='1', help='path to val dataset')
+parser.add_argument('--modelSavePath', type=str, default='1', help='path to save best model')
+
 parser.add_argument('--dataset_name', type=str, default='1', help='dataset name')
 args = parser.parse_args()
 seed_torch(args.seed)
@@ -53,12 +56,12 @@ def main(args):
     n_class = args.num_classes
     device2 = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     ## load data
-    data_pth = os.path.join(args.dataset_path,'images') #'/home/ntorbati/STORAGE/NucleiAnalysis/tif/1.kumar/train/'
-    mask_pth = os.path.join(args.dataset_path,'labels')
-    val_data_pth = os.path.join(args.validation_path,'images')
-    val_mask_pth = os.path.join(args.validation_path,'labels')
-    os.makedirs(val_data_pth,exist_ok=True)
-    os.makedirs(val_mask_pth,exist_ok=True)
+    data_pth = args.dataset_path#os.path.join(args.dataset_path,'images') #'/home/ntorbati/STORAGE/NucleiAnalysis/tif/1.kumar/train/'
+    mask_pth = args.dataset_path#os.path.join(args.dataset_path,'labels')
+    val_data_pth = args.validation_path#os.path.join(args.validation_path,'images')
+    val_mask_pth = args.validation_path#os.path.join(args.validation_path,'labels')
+    # os.makedirs(val_data_pth,exist_ok=True)
+    # os.makedirs(val_mask_pth,exist_ok=True)
     train_images = np.sort([im for im in os.listdir(data_pth) if im.endswith('.tif')])
     train_data = []
     train_masks = []
@@ -82,9 +85,9 @@ def main(args):
     ### add hv maps
     train_masks = gen_instance_hv_maps(train_masks)
     val_masks = gen_instance_hv_maps(val_masks)
+    dir_checkpoint = args.modelSavePath
     for folds in [0]:#range(0,n_folds):
         print(f'{args.model} training fold : {folds} ......................................................')
-        dir_checkpoint = Path('/home/ntorbati/PycharmProjects/NucleiAnalysis/checkpoints/' + args.dataset_name + model_name + str(folds) + '/')
         iters = args.iter
         lr = 1e-4
         model1 = get_model(args)
@@ -117,16 +120,36 @@ def main(args):
         del model1
 if __name__ == "__main__":
     args.model = "hovernext"
-    dataset_tags = ['pan-cancer-nuclei-seg', 'monuseg', 'cpm17', 'tnbc',
-                    'cryonuseg', 'nuinsseg', 'consep', 'puma', 'monusac', 'data science bowl']
-    data_path = '/home/ntorbati/STORAGE/NucleiAnalysis/tif/'
+    dataset_tags = [
+        # 'pcns',
+        # 'monuseg',
+        # 'cpm17',
+        # 'tnbc',
+        # 'cryonuseg',
+        'nuinsseg',
+        # 'consep',
+        # 'puma',
+        # 'monusac',
+        # 'dsb'
+    ]
+    data_path = "/home/ntorbati/STORAGE/NucleiAnalysis/tif/custom_split/"
     logs_dir = '/home/ntorbati/PycharmProjects/NucleiAnalysis/Models/CellVit/CellViT/logs_paper/logs'
+
     datasets_names = os.listdir(data_path)
     for dataset_tag in dataset_tags:
         for dataset_name in datasets_names:
-            if dataset_tag in dataset_name:
+            if dataset_tag in dataset_name.lower():
+
                 print(dataset_name)
                 args.dataset_name = dataset_name
-                args.dataset_path = os.path.join(data_path,dataset_name,'train','fold0')
-                args.validation_path = os.path.join(data_path,dataset_name,'train','fold1')
+                args.dataset_path = os.path.join(data_path,dataset_name,'train_256')
+                args.validation_path = os.path.join(data_path,dataset_name,'train_256','val')
+                args.modelSavePath = Path(
+                    '/home/ntorbati/PycharmProjects/NucleiAnalysis/checkpoints/' + args.dataset_name + args.model + str(
+                        10) + '/')
+
+
+                os.makedirs(args.validation_path, exist_ok=True)
+                if len(os.listdir(args.validation_path))==0:
+                    train_val_split(args.dataset_path)
                 main(args)
