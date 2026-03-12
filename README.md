@@ -34,4 +34,15 @@ NuFuse dataset is available on [figshare](https://figshare.com/s/c81d0c3401e1bea
 ## Acknowledgements
 This project has been conducted through a joint WWTF-funded project (Grant ID: 10.47379/LS23006) between the Medical University of Vienna and Danube Private University. 
 ## Citation
-Our paper preprint is available on arXiv: https://arxiv.org/
+Our paper preprint is available on arXiv: https://arxiv.org/abs/2601.20104
+
+
+BibTex entry:
+```
+@article{torbati2026nucfuserank,
+  title={NucFuseRank: Dataset Fusion and Performance Ranking for Nuclei Instance Segmentation},
+  author={Torbati, Nima and Meshcheryakova, Anastasia and Woitek, Ramona and Hatamikia, Sepideh and Mechtcheriakova, Diana and Mahbod, Amirreza},
+  journal={arXiv preprint arXiv:2601.20104},
+  year={2026}
+}
+```
