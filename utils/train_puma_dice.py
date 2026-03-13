@@ -1,3 +1,6 @@
+import os
+
+import cv2
 from transformers import SegformerImageProcessor
 import random
 import torch
@@ -65,6 +68,10 @@ def train_model(
         nuclei = False,
         segformer_variant = "nvidia/segformer-b2-finetuned-ade-512-512",
         stain_norm=False,
+        save_images = False,
+        fold = 0,
+        train_names = None,
+        val_names = None,
 ):
     # 1. Create dataset
 
@@ -280,6 +287,40 @@ def train_model(
                             # state_dict['mask_values'] = dataset.mask_values
                             torch.save(state_dict, str(dir_checkpoint / 'checkpoint_epoch{}.pth'.format(1)))
                             best_model_wts = copy.deepcopy(state_dict)
+
+                    if save_images and (epoch == epochs):
+                        model.load_state_dict(best_model_wts)
+                        model.eval()
+                        with torch.no_grad():
+                            kk = 0
+                            for images, _ in dataloaders[phase]:
+                                # images, true_masks = Mine_resize(image=images, mask=true_masks, final_size=target_siz)
+                                images = images.to(device=device, dtype=torch.float32)
+                                with autocast(enabled=amp):
+                                    masks_pred = model.forward(images)
+                                    if model_name == 'hovernext':
+                                        binary_pred = masks_pred[:, 5]
+                                        binary_pred = (F.sigmoid(binary_pred) > 0.5).float()
+                                        preds = torch.cat([binary_pred.unsqueeze(1), masks_pred[:, 0:2]], dim=1)
+                                        preds = np.transpose(preds.cpu().numpy(), (0, 2, 3, 1))
+                                    # elif model_name == 'cellvit':
+                                    #     binary_pred = torch.argmax(masks_pred['nuclei_binary_map'], dim=1)
+                                    #     preds = masks_pred['hv_map'].permute(0,2,3,1).cpu().numpy()
+                                    # preds = torch.cat([binary_pred.unsqueeze(1), masks_pred['hv_map']], dim=1)
+                                    # preds = np.transpose(preds.cpu().numpy(),(0,2,3,1))
+                                    elif model_name == 'acs':
+                                        binary_pred = masks_pred[:, 5]
+                                        binary_pred = (F.sigmoid(binary_pred) > 0.5).float()
+                                        preds = torch.cat([binary_pred.unsqueeze(1), masks_pred[:, 0:2]], dim=1)
+                                        preds = np.transpose(preds.cpu().numpy(), (0, 2, 3, 1))
+                                    pred_inst, _ = validation_pq.post_process_cell_segmentation(pred_map=preds)
+                                    pred_inst = remap_label(pred_inst)
+                                    os.makedirs(os.path.join(dir_checkpoint,f'fold{fold}Result'), exist_ok=True)
+                                    save_dir = os.path.join(dir_checkpoint,f'fold{fold}Result', val_names[kk].replace('.tif','.png'))
+                                    cv2.imwrite(save_dir,pred_inst)
+                                    save_dir = os.path.join(dir_checkpoint,f'fold{fold}Result', val_names[kk].replace('.tif','.npy'))
+                                    np.save(save_dir,pred_inst)
+                                    kk+=1
 
     try:
         model.load_state_dict(best_model_wts)
