@@ -1,6 +1,6 @@
 import numpy as np
 np.bool=np.bool_
-from utils.train_puma_dice import train_model
+from utils.train_model import train_model
 from pathlib import Path
 import os
 import argparse

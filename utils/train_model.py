@@ -7,16 +7,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from pathlib import Path
-from utils.utils_puma import Mine_resize, puma_f1_loss_custom
-from utils.utils_puma import KorniaAugmentation
+from utils.utilsNew import Mine_resize, puma_f1_loss_custom
+from utils.utilsNew import KorniaAugmentation
 from torch import optim
 from utils.utils_nuclei import gen_instance_hv_maps,get_fast_dice_2, get_fast_aji
 from utils.LoadPumaData import PumaTissueDataset
-from utils.utils_puma import collate_tile_patches
+from utils.utilsNew import collate_tile_patches
 from torch.cuda.amp import autocast, GradScaler
 import torch.nn.utils
 from tqdm import tqdm
-from utils.utils_puma import dice_loss_binary
+from utils.utilsNew import dice_loss_binary
 # from src.utils.kd_loss import MSELoss
 from torch.utils.data import DataLoader
 import copy

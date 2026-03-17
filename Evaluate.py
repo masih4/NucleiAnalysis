@@ -1,7 +1,7 @@
 import numpy as np
 from pretrainedmodels.models.torchvision_models import model_name
 np.bool=np.bool_
-from utils.train_puma_dice import train_model
+from utils.train_model import train_model
 from sklearn.model_selection import KFold
 from pathlib import Path
 import os

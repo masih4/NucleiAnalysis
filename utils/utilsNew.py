@@ -8,7 +8,7 @@ import cv2
 from numpy.core.defchararray import endswith
 import csv
 # from ocelot_eval import ocelot_f1_main
-from utils.dice_puma import compute_dice_scores, calculate_micro_dice_score_with_masks_eval, calculate_micro_dice_score_with_masks
+from utils.dice_metric import compute_dice_scores, calculate_micro_dice_score_with_masks_eval, calculate_micro_dice_score_with_masks
 import os
 import tifffile
 import torch

@@ -15,7 +15,7 @@ from torchvision.transforms import Resize
 import imgaug as ia
 import torchstain
 from imgaug import augmenters as iaa
-from utils.utils_puma import (
+from utils.utilsNew import (
     add_to_brightness,
     add_to_contrast,
     add_to_hue,
@@ -30,7 +30,7 @@ import kornia
 import kornia.geometry.transform as T
 from torchvision import transforms as T1
 from utils.stain_normalization import multitarget_macenko
-from utils.utils_puma import dilate_erode
+from utils.utilsNew import dilate_erode
 import xml.etree.ElementTree as ET
 def load_data_tissue(target_size = (128,128), data_path = '', annot_path = '',tissue_labels = None,im_size = (1024,1024)):
 
