@@ -16,7 +16,7 @@ def multitarget_macenko(multi_normalizer):
     # initialize normalizers for each backend and fit to target image
     # single_normalizer = torchstain.normalizers.MacenkoNormalizer(backend="torch")
     # single_normalizer.fit(target)
-    pth = '/home/ntorbati/STORAGE/NucleiAnalysis/tif/stain_normalization/'
+    pth = '/home/ntorbati/STORAGE/wbc/wbc-bench-2026_1/new/'
     ims = [im for im in os.listdir(pth)]
     imgs = []
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     ])
     multi_normalizer = torchstain.normalizers.MultiMacenkoNormalizer(backend="torch", norm_mode="avg-post")
     multi_normalizer = multitarget_macenko(multi_normalizer)
-    im = '/home/ntorbati/STORAGE/NucleiAnalysis/tif/10. nuinsseg/train/human_bladder_01.tif'
+    im = '/home/ntorbati/STORAGE/wbc/wbc-bench-2026_1/phase1/00017469.jpg'
 
     im1 = T(cv2.cvtColor(cv2.imread(im), cv2.COLOR_BGR2RGB))
     # transform

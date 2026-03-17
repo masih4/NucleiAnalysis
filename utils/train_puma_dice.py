@@ -10,6 +10,7 @@ from pathlib import Path
 from utils.utils_puma import Mine_resize, puma_f1_loss_custom
 from utils.utils_puma import KorniaAugmentation
 from torch import optim
+from utils.utils_nuclei import gen_instance_hv_maps,get_fast_dice_2, get_fast_aji
 from utils.LoadPumaData import PumaTissueDataset
 from utils.utils_puma import collate_tile_patches
 from torch.cuda.amp import autocast, GradScaler
@@ -271,7 +272,7 @@ def train_model(
                     # print('new metrics: ', total_dice, total_iou)
                     val_pq = np.mean(np.stack(val_pq))  # Divide by total validation samples
                     print(
-                        f"pq: {val_pq:.4f}")
+                        f"f1: {val_pq:.4f}")
                     th = val_pq
                     scheduler.step(th)
                     counter += 1
@@ -280,7 +281,7 @@ def train_model(
                         best_val_score = th
                         print( 'saving best model')
                         print(
-                            f"pq: {val_pq:.4f}")
+                            f"f1: {val_pq:.4f}")
                         if save_checkpoint:
                             Path(dir_checkpoint).mkdir(parents=True, exist_ok=True)
                             state_dict = model.state_dict()
@@ -293,7 +294,24 @@ def train_model(
                         model.eval()
                         with torch.no_grad():
                             kk = 0
-                            for images, _ in dataloaders[phase]:
+                            results_dict = {}
+
+                            results_dict['PQ'] = []
+                            results_dict['DQ'] = []
+                            results_dict['SQ'] = []
+                            results_dict['precision'] = []
+                            results_dict['recall'] = []
+                            results_dict['AJI'] = []
+                            results_dict['DICE'] = []
+                            validation_pq = DetectionCellPostProcessor()
+                            SQ = []
+                            DQ = []
+                            PQ = []
+                            precision = []
+                            recall = []
+                            AJI = []
+                            DICE = []
+                            for images, true_masks in dataloaders[phase]:
                                 # images, true_masks = Mine_resize(image=images, mask=true_masks, final_size=target_siz)
                                 images = images.to(device=device, dtype=torch.float32)
                                 with autocast(enabled=amp):
@@ -316,12 +334,49 @@ def train_model(
                                     pred_inst, _ = validation_pq.post_process_cell_segmentation(pred_map=preds)
                                     pred_inst = remap_label(pred_inst)
                                     os.makedirs(os.path.join(dir_checkpoint,f'fold{fold}Result'), exist_ok=True)
-                                    save_dir = os.path.join(dir_checkpoint,f'fold{fold}Result', val_names[kk].replace('.tif','.png'))
-                                    cv2.imwrite(save_dir,pred_inst)
+                                    # save_dir = os.path.join(dir_checkpoint,f'fold{fold}Result', val_names[kk].replace('.tif','.png'))
+                                    # cv2.imwrite(save_dir,pred_inst)
                                     save_dir = os.path.join(dir_checkpoint,f'fold{fold}Result', val_names[kk].replace('.tif','.npy'))
                                     np.save(save_dir,pred_inst)
                                     kk+=1
 
+                                    gt = remap_label(true_masks[0, 0].cpu().numpy().astype(np.int32))
+                                    pq, pred_details = get_fast_pq(gt, pred_inst)
+                                    if pq[0] != 0:
+                                        dice = get_fast_dice_2(gt, pred_inst)
+                                        aji = get_fast_aji(gt, pred_inst)
+                                    else:
+                                        dice = 0
+                                        aji = 0
+
+                                    tp = len(pred_details[0])
+                                    fp = len(pred_details[3])
+                                    fn = len(pred_details[2])
+                                    DQ.append(pq[0])
+                                    SQ.append(pq[1])
+                                    PQ.append(pq[2])
+                                    dq = tp / (tp + 0.5 * fp + 0.5 * fn + 1.0e-6)  # good practice?
+
+                                    precision.append(tp / (tp + fp + 1e-6))
+                                    recall.append(tp / (tp + fn + 1e-6))
+                                    AJI.append(aji)
+                                    DICE.append(dice)
+                            SQ = np.mean(np.stack(SQ))
+                            DQ = np.mean(np.stack(DQ))
+                            PQ = np.mean(np.stack(PQ))
+                            precision = np.mean(np.stack(precision))
+                            recall = np.mean(np.stack(recall))
+                            aji = np.mean(np.stack(AJI))
+                            dice = np.mean(np.stack(DICE))
+                            results_dict['PQ'] = PQ
+                            results_dict['DQ'] = DQ
+                            results_dict['SQ'] = SQ
+                            results_dict['precision'] = precision
+                            results_dict['recall'] = recall
+                            results_dict['AJI'] = aji
+                            results_dict['DICE'] = dice
+                            pthh = os.path.join(dir_checkpoint, 'results.npy')
+                            np.save(pthh, results_dict, allow_pickle=True)
     try:
         model.load_state_dict(best_model_wts)
     except:

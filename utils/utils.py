@@ -15,7 +15,8 @@ from shapely.geometry import shape
 from rasterio.features import rasterize
 import torch
 import xml.etree.ElementTree as ET
-
+from utils_nuclei import get_fast_dice_2, get_fast_aji
+from Models.CellVit.CellViT.cell_segmentation.utils.metrics import get_fast_pq, remap_label
 def adapt_checkpoint(checkpoint, model):
     model_dict = model.state_dict()
     new_checkpoint = {}
@@ -529,3 +530,63 @@ def split_patches(arr: np.ndarray, split: int) -> np.ndarray:
     if C==1:
         arr = arr[:,:,:,0]
     return arr
+
+def computeMetricsFromMasks(prediction_pth = None, GT_pth = None):
+    results_dict = {}
+
+    results_dict['PQ'] = []
+    results_dict['DQ'] = []
+    results_dict['SQ'] = []
+    results_dict['precision'] = []
+    results_dict['recall'] = []
+    results_dict['AJI'] = []
+    results_dict['DICE'] = []
+    SQ = []
+    DQ = []
+    PQ = []
+    precision = []
+    recall = []
+    AJI = []
+    DICE = []
+    pds = [im_np for im_np in os.listdir(prediction_pth) if im_np.endswith('.npy')]
+    for image in pds:
+        pred_inst = np.load(os.path.join(prediction_pth, image))
+        gt = np.load(os.path.join(GT_pth, image))
+        pred_inst = remap_label(pred_inst)
+
+        gt = remap_label(gt)
+        pq, pred_details = get_fast_pq(gt, pred_inst)
+        if pq[0] != 0:
+            dice = get_fast_dice_2(gt, pred_inst)
+            aji = get_fast_aji(gt, pred_inst)
+        else:
+            dice = 0
+            aji = 0
+
+        tp = len(pred_details[0])
+        fp = len(pred_details[3])
+        fn = len(pred_details[2])
+        DQ.append(pq[0])
+        SQ.append(pq[1])
+        PQ.append(pq[2])
+        dq = tp / (tp + 0.5 * fp + 0.5 * fn + 1.0e-6)  # good practice?
+
+        precision.append(tp / (tp + fp + 1e-6))
+        recall.append(tp / (tp + fn + 1e-6))
+        AJI.append(aji)
+        DICE.append(dice)
+    SQ = np.mean(np.stack(SQ))
+    DQ = np.mean(np.stack(DQ))
+    PQ = np.mean(np.stack(PQ))
+    precision = np.mean(np.stack(precision))
+    recall = np.mean(np.stack(recall))
+    aji = np.mean(np.stack(AJI))
+    dice = np.mean(np.stack(DICE))
+    results_dict['PQ'] = PQ
+    results_dict['DQ'] = DQ
+    results_dict['SQ'] = SQ
+    results_dict['precision'] = precision
+    results_dict['recall'] = recall
+    results_dict['AJI'] = aji
+    results_dict['DICE'] = dice
+    return results_dict
