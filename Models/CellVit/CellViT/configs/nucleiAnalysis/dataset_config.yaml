@@ -1,0 +1,6 @@
+tissue_types:
+  "Background": 0
+nuclei_types:
+  "Background": 0
+  "Nuclei": 1
+
