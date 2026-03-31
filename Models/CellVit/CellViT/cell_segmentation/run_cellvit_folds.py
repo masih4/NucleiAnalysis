@@ -168,7 +168,7 @@ if __name__ == "__main__":
         conf_pth = '/home/ntorbati/PycharmProjects/NucleiAnalysis/Models/CellVit/CellViT/configs/nucleiAnalysis'
         configuration_parser = ExperimentBaseParser()
         configuration = configuration_parser.parse_arguments()
-
+        configuration['model']['pretrained_encoder'] = '/home/ntorbati/PycharmProjects/NucleiAnalysis/Models/CellVit/CellViT/weights/vit256_small_dino.pth'
 
         data_path = '/home/ntorbati/STORAGE/NucleiAnalysis/tif/custom_split/NuInsSeg/train/'
         logs_dir = '/home/ntorbati/PycharmProjects/NucleiAnalysis/Models/CellVit/CellViT/logs_paper/logs/'
