@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from einops import rearrange
-from models.encoders.VIT.SAM.image_encoder import ImageEncoderViT
-from models.encoders.VIT.vits_histo import VisionTransformer
+from Models.CellVit.CellViT.models.encoders.VIT.SAM.image_encoder import ImageEncoderViT
+from Models.CellVit.CellViT.models.encoders.VIT.vits_histo import VisionTransformer
 
 import torch
 import torch.nn as nn

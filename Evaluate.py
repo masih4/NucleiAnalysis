@@ -1,9 +1,6 @@
 import numpy as np
-from pretrainedmodels.models.torchvision_models import model_name
+
 np.bool=np.bool_
-from utilsHover.train_model import train_model
-from sklearn.model_selection import KFold
-from pathlib import Path
 import os
 import argparse
 import random
@@ -14,9 +11,8 @@ from Models.ACS.model import DualEncoderUNet
 # import segmentation_models_pytorch as smp
 import yaml
 from Models.HoverNext.hover_next_train.src.multi_head_unet import get_model as get_hovernext
-from Models.get_models import get_train_model as get_cellvit
+from Models.CellVit.get_models import get_train_model as get_cellvit
 import tifffile
-import matplotlib.pyplot as plt
 from utilsHover.utils_nuclei import gen_instance_hv_maps,get_fast_dice_2, get_fast_aji
 # from utilsHover.utilsHover import split_patches
 import cv2
@@ -30,7 +26,9 @@ from torchvision import transforms as T
 def main_mini(args):
     k = 0
     device2 = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    results_dict = args.results_dict
+    results_dict['PQ'] = []
+    results_dict['paths'] = []
     model1 = get_model(args)
     model1.eval()
     model1.to(device2)
@@ -41,59 +39,72 @@ def main_mini(args):
     ## load data
     data_pth = args.pred_path
     # mask_pth = args.pred_path
-    imgs_paths = np.sort([im for im in os.listdir(data_pth) if im.endswith('.npy')])
-    image_data = []
-    mask_data = []
-    for im in np.sort(imgs_paths):
-        img = tifffile.imread(os.path.join(args.dataset_path, im.replace('.npy', '.tif')))
-        image_data.append(img)
-        msk = np.load(os.path.join(args.dataset_path, im))
-        mask_data.append(msk)
+    imgs_paths = np.sort([im for im in os.listdir(data_pth) if im.endswith('.tif')])
+    spl = 500
+    chunks = np.array_split(imgs_paths, len(imgs_paths) // spl)
+    for ch in chunks:
+        image_data = []
+        mask_data = []
 
-    # mask_data = np.stack(mask_data)
-    # image_data = np.stack(image_data)
+        for im in ch:
+            img = tifffile.imread(os.path.join(data_pth, im))
+            image_data.append(img)
+            msk = np.load(os.path.join(args.dataset_path, im.replace('.tif', '.npy')))
+            mask_data.append(msk)
 
-    ### add hv maps
+        # mask_data = np.stack(mask_data)
+        # image_data = np.stack(image_data)
 
-
-
-
-    ### tile and pad the images to 256 256
-    # split_dev = 4
-    # image_data = split_patches(image_data,split_dev)
-    # mask_data = np.transpose(split_patches(np.transpose(mask_data, (0,2,3,1)),split_dev), (0,3,1,2))
-    validation_pq = DetectionCellPostProcessor()
-    SQ = []
-    DQ = []
-    PQ = []
-    precision = []
-    recall = []
-    AJI = []
-    DICE = []
-    results_dict = args.results_dict
-    with torch.no_grad():
-        for images, true_masks, pth in zip(image_data, mask_data, imgs_paths):
-            if 'cellseg' in pth:
-                images = cv2.resize(images, (
-                int(images.shape[1] * (40 / 200)), int(images.shape[0] * (40 / 200))))
-                true_masks = cv2.resize(true_masks, (
-                int(true_masks.shape[1] * (40 / 200)), int(true_masks.shape[0] * (40 / 200))),
-                                  interpolation=cv2.INTER_NEAREST)
-            true_masks = gen_instance_hv_maps(true_masks[np.newaxis, ...])
+        ### add hv maps
 
 
+
+
+        ### tile and pad the images to 256 256
+        # split_dev = 4
+        # image_data = split_patches(image_data,split_dev)
+        # mask_data = np.transpose(split_patches(np.transpose(mask_data, (0,2,3,1)),split_dev), (0,3,1,2))
+        validation_pq = DetectionCellPostProcessor()
+        SQ = []
+        DQ = []
+        PQ = []
+        precision = []
+        recall = []
+        AJI = []
+        DICE = []
+        mean = (0.5, 0.5, 0.5)
+        std = (0.5, 0.5, 0.5)
+        inference_transforms_vit = T.Compose(
+            [T.Normalize(mean=mean, std=std)]
+        )
+        mean = (0.485, 0.456, 0.406)
+        std = (0.229, 0.224, 0.225)
+        inference_transforms_cnn = T.Compose(
+            [T.Normalize(mean=mean, std=std)]
+        )
+
+        with torch.no_grad():
+            images = np.stack(image_data, axis=0)
+            true_masks = np.stack(mask_data, axis=0)
             if args.model == 'cellvit':
+                images = torch.tensor(images, dtype=torch.float32)
+                images = images/255.0
+                images = images.permute(0, 3, 1, 2)
                 images = inference_transforms_vit(images)
-                true_masks = true_masks.astype("float32")
-                true_masks = torch.tensor(true_masks, dtype=torch.float32)
+                # true_masks = true_masks.astype("float32")
+                # true_masks = torch.tensor(true_masks, dtype=torch.float32)
             else:
+                images = torch.tensor(images, dtype=torch.float32)
+                images = images/255.0
+                images = images.permute(0, 3, 1, 2)
+
                 images = inference_transforms_cnn(images)
-                true_masks = true_masks.astype("float32")
-                true_masks = torch.tensor(true_masks, dtype=torch.float32)
+                # true_masks = true_masks.astype("float32")
+                # true_masks = torch.tensor(true_masks, dtype=torch.float32)
                 # images, true_masks =np2torch(images, true_masks)
 
-            images = images.to(device=device2, dtype=torch.float32).unsqueeze(0)
-            true_masks = true_masks.to(device=device2, dtype=torch.float32)
+            images = images.to(device=device2, dtype=torch.float32)
+            # true_masks = true_masks.to(device=device2, dtype=torch.float32)
             images, pad = pad_to_multiple(images)
             masks_pred = model1(images)
 
@@ -110,45 +121,51 @@ def main_mini(args):
                 preds = remove_pad(preds, pad)
                 preds = np.transpose(preds.cpu().numpy(),(0,2,3,1))
 
-            pred_inst, _ = validation_pq.post_process_cell_segmentation(pred_map=preds, b_th=th2, f_th=th3)
-            pred_inst = remap_label(pred_inst)
-            gt = remap_label(true_masks[0, 0].cpu().numpy().astype(np.int32))
-            pq, pred_details = get_fast_pq(gt, pred_inst)
-            if pq[0] != 0:
-                dice = get_fast_dice_2(gt, pred_inst)
-                aji = get_fast_aji(gt, pred_inst)
-            else:
-                dice = 0
-                aji = 0
+            pred_inst = []
+            for pd in preds:
+                pred_inst1, _ = validation_pq.post_process_cell_segmentation(pred_map=pd, b_th=th2, f_th=th3)
+                pred_inst.append(pred_inst1)
+            pred_inst = np.stack(pred_inst)
 
-            tp = len(pred_details[0])
-            fp = len(pred_details[3])
-            fn = len(pred_details[2])
-            DQ.append(pq[0])
-            SQ.append(pq[1])
-            PQ.append(pq[2])
-            dq = tp / (tp + 0.5 * fp + 0.5 * fn + 1.0e-6)  # good practice?
 
-            precision.append(tp / (tp + fp + 1e-6))
-            recall.append(tp / (tp + fn + 1e-6))
-            AJI.append(aji)
-            DICE.append(dice)
-        SQ = np.mean(np.stack(SQ))  # Divide by total validation samples
-        DQ = np.mean(np.stack(DQ))  # Divide by total validation samples
-        PQ = np.mean(np.stack(PQ))  # Divide by total validation samples
-        precision = np.mean(np.stack(precision))  # Divide by total validation samples
-        recall = np.mean(np.stack(recall))  # Divide by total validation samples
-        aji = np.mean(np.stack(AJI))
-        dice = np.mean(np.stack(DICE))
-        results_dict['PQ'] = PQ
-        results_dict['DQ'] = DQ
-        results_dict['SQ'] = SQ
-        results_dict['precision'] = precision
-        results_dict['recall'] = recall
-        results_dict['AJI'] = aji
-        results_dict['DICE'] = dice
-        print(args.dataset_name,
-            f"PQ: {PQ:.4f}",f"AJI: {aji:.4f}",f"Dice: {dice:.4f}", f"SQ: {SQ:.4f}", f"DQ: {DQ:.4f}", f"precision: {precision:.4f}", f"recall: {recall:.4f}")
+            for pd, gd in zip(pred_inst, true_masks):
+                pd = remap_label(pd)
+                gd = remap_label(gd)
+                pq, _ = get_fast_pq(gd, pd)
+                PQ.append(pq[2])
+            # if pq[0] != 0:
+            #     dice = get_fast_dice_2(gt, pred_inst)
+            #     aji = get_fast_aji(gt, pred_inst)
+            # else:
+            #     dice = 0
+            #     aji = 0
+
+            # tp = len(pred_details[0])
+            # fp = len(pred_details[3])
+            # fn = len(pred_details[2])
+            # DQ.append(pq[0])
+            # SQ.append(pq[1])
+            # dq = tp / (tp + 0.5 * fp + 0.5 * fn + 1.0e-6)  # good practice?
+
+            # precision.append(tp / (tp + fp + 1e-6))
+            # recall.append(tp / (tp + fn + 1e-6))
+            # AJI.append(aji)
+            # DICE.append(dice)
+            # SQ = np.mean(np.stack(SQ))  # Divide by total validation samples
+            # DQ = np.mean(np.stack(DQ))  # Divide by total validation samples
+            # PQ = np.mean(np.stack(PQ))  # Divide by total validation samples
+            # precision = np.mean(np.stack(precision))  # Divide by total validation samples
+            # recall = np.mean(np.stack(recall))  # Divide by total validation samples
+            # aji = np.mean(np.stack(AJI))
+            # dice = np.mean(np.stack(DICE))
+        del masks_pred
+        del images
+        del preds
+        del pred_inst
+        del true_masks
+        results_dict['PQ'].append(PQ)
+        results_dict['paths'].append(ch)
+    torch.cuda.empty_cache()
     return results_dict
 
 

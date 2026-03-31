@@ -1,9 +1,6 @@
 import numpy as np
-from pretrainedmodels.models.torchvision_models import model_name
+
 np.bool=np.bool_
-from utils.train_model import train_model
-from sklearn.model_selection import KFold
-from pathlib import Path
 import os
 import argparse
 import random
@@ -14,11 +11,11 @@ from Models.ACS.model import DualEncoderUNet
 # import segmentation_models_pytorch as smp
 import yaml
 from Models.HoverNext.hover_next_train.src.multi_head_unet import get_model as get_hovernext
-from Models.get_models import get_train_model as get_cellvit
+from Models.CellVit.get_models import get_train_model as get_cellvit
 import tifffile
 import matplotlib.pyplot as plt
-from utils.utils_nuclei import gen_instance_hv_maps,get_fast_dice_2, get_fast_aji
-# from utils.utils import split_patches
+from utilsHover.utils_nuclei import gen_instance_hv_maps,get_fast_dice_2, get_fast_aji
+# from utilsHover.utilsHover import split_patches
 import cv2
 import torch.nn.functional as F
 from Models.CellVit.CellViT.cell_segmentation.utils.metrics import get_fast_pq, remap_label

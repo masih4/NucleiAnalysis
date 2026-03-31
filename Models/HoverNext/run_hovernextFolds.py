@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.model_selection import KFold
 
 np.bool=np.bool_
-from utils.train_model import train_model
+from utilsHover.train_model import train_model
 from pathlib import Path
 import os
 import argparse
@@ -11,8 +11,9 @@ import numpy as np
 import torch
 from Models.HoverNext.hover_next_train.src.multi_head_unet import get_model as get_hovernext
 import tifffile
+
 import matplotlib.pyplot as plt
-from utils.utils_nuclei import gen_instance_hv_maps
+from utilsHover.utils_nuclei import gen_instance_hv_maps
 def seed_torch(seed):
     if seed==None:
         seed= random.randint(1, 100)
@@ -33,7 +34,7 @@ parser.add_argument('--img_size', type=int, default=512, help='img size of per b
 parser.add_argument('--num_classes', type=int, default=1, help='seg num_classes')
 parser.add_argument('--seed', type=int, default=19, help='random seed')
 parser.add_argument('--variant', type=str, default='1', help='fusion variant')
-parser.add_argument('--iter', type=int, default=100, help='iteration')
+parser.add_argument('--iter', type=int, default=150, help='iteration')
 parser.add_argument('--dataset_path', type=str, default='1', help='path to train dataset')
 parser.add_argument('--validation_path', type=str, default='1', help='path to val dataset')
 parser.add_argument('--modelSavePath', type=str, default='1', help='path to save best model')
@@ -120,7 +121,7 @@ def main(args):
         ful_size=final_target_size,
         dir_checkpoint=dir_checkpoint,
         model_name=model_name,
-        val_sleep_time = -1,
+        val_sleep_time = 50,
         nuclei=False,
             fold = folds,
             train_names = train_names,

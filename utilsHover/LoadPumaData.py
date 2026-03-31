@@ -8,14 +8,14 @@ from skimage.draw import polygon2mask
 import torch
 import cv2
 from torch.utils.data import Dataset
-from utils.random_augs_for_hist import distort_image_with_randaugment
+from utilsHover.random_augs_for_hist import distort_image_with_randaugment
 from torchvision.transforms import InterpolationMode
 from torchvision.transforms import ToTensor
 from torchvision.transforms import Resize
 import imgaug as ia
 import torchstain
 from imgaug import augmenters as iaa
-from utils.utilsNew import (
+from utilsHover.utilsNew import (
     add_to_brightness,
     add_to_contrast,
     add_to_hue,
@@ -29,8 +29,8 @@ import torch.nn.functional as F
 import kornia
 import kornia.geometry.transform as T
 from torchvision import transforms as T1
-from utils.stain_normalization import multitarget_macenko
-from utils.utilsNew import dilate_erode
+from utilsHover.stain_normalization import multitarget_macenko
+from utilsHover.utilsNew import dilate_erode
 import xml.etree.ElementTree as ET
 def load_data_tissue(target_size = (128,128), data_path = '', annot_path = '',tissue_labels = None,im_size = (1024,1024)):
 

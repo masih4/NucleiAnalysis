@@ -1,6 +1,6 @@
 import numpy as np
 np.bool=np.bool_
-from utils.train_model import train_model
+from utilsHover.train_model import train_model
 from pathlib import Path
 import os
 import argparse
@@ -10,7 +10,7 @@ import torch
 from Models.HoverNext.hover_next_train.src.multi_head_unet import get_model as get_hovernext
 import tifffile
 import matplotlib.pyplot as plt
-from utils.utils_nuclei import gen_instance_hv_maps
+from utilsHover.utils_nuclei import gen_instance_hv_maps
 from DataSetTools.utils1 import train_val_split
 def seed_torch(seed):
     if seed==None:

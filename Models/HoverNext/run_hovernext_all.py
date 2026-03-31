@@ -1,7 +1,7 @@
 import numpy as np
 
 np.bool = np.bool_
-from utils.train_model import train_model
+from utilsHover.train_model import train_model
 from pathlib import Path
 import os
 import argparse
@@ -14,10 +14,10 @@ from Models.HoverNext.hover_next_train.src.multi_head_unet import get_model as g
 
 import tifffile
 import matplotlib.pyplot as plt
-from utils.utils_nuclei import gen_instance_hv_maps
+from utilsHover.utils_nuclei import gen_instance_hv_maps
 
 
-# from utils.utils import split_patches
+# from utilsHover.utilsHover import split_patches
 def seed_torch(seed):
     if seed == None:
         seed = random.randint(1, 100)

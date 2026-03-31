@@ -7,21 +7,21 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from pathlib import Path
-from utils.utilsNew import Mine_resize, puma_f1_loss_custom
-from utils.utilsNew import KorniaAugmentation
+from utilsHover.utilsNew import Mine_resize, puma_f1_loss_custom
+from utilsHover.utilsNew import KorniaAugmentation
 from torch import optim
-from utils.utils_nuclei import gen_instance_hv_maps,get_fast_dice_2, get_fast_aji
-from utils.LoadPumaData import PumaTissueDataset
-from utils.utilsNew import collate_tile_patches
+from utilsHover.utils_nuclei import gen_instance_hv_maps,get_fast_dice_2, get_fast_aji
+from utilsHover.LoadPumaData import PumaTissueDataset
+from utilsHover.utilsNew import collate_tile_patches
 from torch.cuda.amp import autocast, GradScaler
 import torch.nn.utils
 from tqdm import tqdm
-from utils.utilsNew import dice_loss_binary
-# from src.utils.kd_loss import MSELoss
+from utilsHover.utilsNew import dice_loss_binary
+# from src.utilsHover.kd_loss import MSELoss
 from torch.utils.data import DataLoader
 import copy
 from Models.CellVit.CellViT.cell_segmentation.utils.post_proc_cellvit import DetectionCellPostProcessor
-from utils.utils_nuclei import inst_loss_hovernext as criterion_hovernext
+from utilsHover.utils_nuclei import inst_loss_hovernext as criterion_hovernext
 # from Models.CellVit.CellViT.base_ml.base_loss import MSGELossMaps
 import matplotlib.pyplot as plt
 import torchstain
@@ -268,11 +268,11 @@ def train_model(
                             pred_inst = remap_label(pred_inst)
                             gt = remap_label(true_masks[0,0].cpu().numpy().astype(np.int32))
                             pq,_ = get_fast_pq(gt, pred_inst)
-                            val_pq.append(pq[0])
+                            val_pq.append(pq[2])
                     # print('new metrics: ', total_dice, total_iou)
                     val_pq = np.mean(np.stack(val_pq))  # Divide by total validation samples
                     print(
-                        f"f1: {val_pq:.4f}")
+                        f"pq: {val_pq:.4f}")
                     th = val_pq
                     scheduler.step(th)
                     counter += 1
@@ -281,7 +281,7 @@ def train_model(
                         best_val_score = th
                         print( 'saving best model')
                         print(
-                            f"f1: {val_pq:.4f}")
+                            f"pq: {val_pq:.4f}")
                         if save_checkpoint:
                             Path(dir_checkpoint).mkdir(parents=True, exist_ok=True)
                             state_dict = model.state_dict()
