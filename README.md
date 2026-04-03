@@ -1,7 +1,7 @@
 # NucFuseRank: Dataset Fusion and Performance Ranking for Nuclei Instance Segmentation
 This repository contains the implementation details of the NuFuseRank paper.
 
-Two state-of-the-art models (HoVerNeXt and CellViT) were used in this study.
+Two state-of-the-art models ([HoVerNeXt](https://github.com/DIAGNijmegen/hovernext) and [CellViT](https://github.com/TIO-IKIM/CellViT)) were used in this study.
 
 ## Running Experiments
 
@@ -19,6 +19,16 @@ Two state-of-the-art models (HoVerNeXt and CellViT) were used in this study.
 
 ## Note
 You need to update the data and weight directory paths according to your local system configuration.
+
+## References
+
+- **HoVerNeXt**  
+  Paper: https://arxiv.org/abs/2303.10711  
+  Code: https://github.com/DIAGNijmegen/hovernext  
+
+- **CellViT**  
+  Paper: https://arxiv.org/abs/2306.15350  
+  Code: https://github.com/TIO-IKIM/CellViT
 
 ## 1. NucFuseRank paper:
 In this paper, we evaluated publicly available H&E-stained datasets using two state-of-the-art models: CellViT and HoVerNeXt. We also introduced a fused dataset constructed from these datasets.
