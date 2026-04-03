@@ -72,7 +72,7 @@ BibTex entry:
 
 - **[0] HoVerNeXt**  
   Paper: https://arxiv.org/abs/2303.10711  
-  Code: https://github.com/DIAGNijmegen/hovernext  
+  Code: https://github.com/digitalpathologybern/hover_next_train
 
 - **[1] CellViT**  
   Paper: https://arxiv.org/abs/2306.15350  
