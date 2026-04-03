@@ -71,7 +71,7 @@ BibTex entry:
 ## References
 
 - **[0] HoVerNeXt**  
-  Paper: https://arxiv.org/abs/2303.10711  
+  Paper: https://proceedings.mlr.press/v250/baumann24a.html
   Code: https://github.com/digitalpathologybern/hover_next_train
 
 - **[1] CellViT**  
