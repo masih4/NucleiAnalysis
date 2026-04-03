@@ -1,7 +1,25 @@
 # NucFuseRank: Dataset Fusion and Performance Ranking for Nuclei Instance Segmentation
-This repository contains:
-1. Dataset descriptions and implementation details of the NucFuseRank paper. 
-2. A list of publicly available datasets for automated nuclei analysis
+This repository contains the implementation details of the NuFuseRank paper.
+
+Two state-of-the-art models (HoVerNeXt and CellViT) were used in this study.
+
+## Running Experiments
+
+1. Download the data from the Figshare link below.
+
+2. For HoVerNeXt:
+   - `Models/HoverNext/run_hovernext.py` runs single-dataset training experiments.
+   - `Models/HoverNext/run_hovernext_all.py` runs K-best dataset training experiments.
+
+3. For CellViT:
+   - `Models/CellVit/CellViT/cell_segmentation/run_cellvit.py` runs single-dataset training experiments.
+   - `Models/CellVit/CellViT/cell_segmentation/run_cellvit_all.py` runs K-best dataset training experiments.
+
+4. `Evaluate.py` and `EvaluateAll.py` measure model performance on the NucFuse test set.
+
+## Note
+You need to update the data and weight directory paths according to your local system configuration.
+
 ## 1. NucFuseRank paper:
 In this paper, we evaluated publicly available H&E-stained datasets using two state-of-the-art models: CellViT and HoVerNeXt. We also introduced a fused dataset constructed from these datasets.
 <img width="4292" height="2148" alt="image" src="https://github.com/user-attachments/assets/a32215de-01bc-45ba-9901-b091b357e00c" />
