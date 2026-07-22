@@ -51,7 +51,7 @@ the th| CPM17 | HoVerNeXt | 51.86 | 54.49 | 65.38 | 68.05 | 71.81 | 4 | 4 |
 |  | CellViT | 47.84 | 51.00 | 64.72 | 66.71 | 65.17 |  |  |
 
 ### NucFuse dataset:
-NuFuse dataset is available on [figshare](https://figshare.com/s/c81d0c3401e1bea007f6)
+NuFuse dataset is available on [figshare](https://www.kaggle.com/datasets/nimatorbati/nucfuserank-nuclei-instance-segmentation)
 
 ## Acknowledgements
 This project has been conducted through a joint WWTF-funded project (Grant ID: 10.47379/LS23006) between the Medical University of Vienna and Danube Private University. 
